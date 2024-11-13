@@ -30,7 +30,7 @@ interface IForm {
 
 export const UserForm = ({ edit }: { edit?: boolean }) => {
     const [loading, setLoading] = useState(false);
-    const { session, signIn } = useSession();
+    const { session, signIn, signOut } = useSession();
     const colorScheme = useColorScheme();
     const router = useRouter();
     const userState = userStore((state) => state.user);
@@ -53,7 +53,8 @@ export const UserForm = ({ edit }: { edit?: boolean }) => {
         try {
             if (edit) {
                 await editUser(session as string, data);
-                router.replace("/profile");
+                signOut()
+                router.replace("/login");
             } else {
                 const loginToken = await singUp(data);
                 const { access_token } = loginToken;
@@ -96,22 +97,25 @@ export const UserForm = ({ edit }: { edit?: boolean }) => {
                 name="username"
             />
             {errors.username && <Text>Usuário é obrigatório.</Text>}
-            <Controller
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                        secureTextEntry
-                        placeholder="Senha"
-                        style={styles.input}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                    />
-                )}
-                name="password"
-            />
-            {errors.password && <Text>Senha é obrigatório.</Text>}
+            {!edit && (
+                <Controller
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            secureTextEntry
+                            placeholder="Senha"
+                            style={styles.input}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    )}
+                    name="password"
+                />
+            )}
+            {errors.password && !edit && <Text>Senha é obrigatório.</Text>}
+
             <Controller
                 control={control}
                 rules={{ required: true, pattern: /^[0-9]{5}-?[0-9]{3}$/ }}
@@ -169,6 +173,7 @@ export const UserForm = ({ edit }: { edit?: boolean }) => {
                     />
                 )}
             </View>
+            {edit && <Text style={styles.obs}>Obs: ao editar seu perfil você será deslogado</Text>}
             <ToastManager />
         </>
     );
@@ -182,5 +187,8 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 10,
         borderRadius: 4,
+    },
+    obs: {
+        marginTop: 30
     },
 });
