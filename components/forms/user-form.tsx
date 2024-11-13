@@ -1,14 +1,24 @@
-import React from 'react'
+import React from "react";
 import { singUp } from "@/api/auth/sing-up";
 import { useSession } from "@/app/ctx";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, Button, Linking, StyleSheet, TextInput, useColorScheme } from "react-native";
+import {
+    ActivityIndicator,
+    Button,
+    Linking,
+    StyleSheet,
+    TextInput,
+    useColorScheme,
+} from "react-native";
 import ToastManager, { Toast } from "expo-react-native-toastify";
 import { errorHandler } from "@/utils/error-handler";
 import { getCepData } from "@/api/auth/get-cep";
 import { Text, View } from "../themed";
 import { color } from "@/constants/color";
+import { userStore } from "@/store/user-store";
+import { useRouter } from "expo-router";
+import { editUser } from "@/api/user/edit";
 
 interface IForm {
     username: string;
@@ -18,24 +28,39 @@ interface IForm {
     state: string;
 }
 
-export const UserForm = () => {
+export const UserForm = ({ edit }: { edit?: boolean }) => {
     const [loading, setLoading] = useState(false);
+    const { session, signIn } = useSession();
     const colorScheme = useColorScheme();
-    const { signIn } = useSession();
+    const router = useRouter();
+    const userState = userStore((state) => state.user);
     const {
         control,
         handleSubmit,
         formState: { errors },
         setValue,
-    } = useForm<IForm>();
+    } = useForm<IForm>({
+        defaultValues: {
+            username: userState?.username,
+            cep: userState?.cep,
+            city: userState?.city,
+            state: userState?.state,
+        },
+    });
 
-    const handleLogin = async (data: IForm) => {
+    const onSubmit = async (data: IForm) => {
         setLoading(true);
         try {
-            const loginToken = await singUp(data);
-            const { access_token } = loginToken;
-            signIn(access_token);
-            Linking.openURL("/");
+            if (edit) {
+                await editUser(session as string, data);
+                router.replace("/profile");
+            } else {
+                const loginToken = await singUp(data);
+                const { access_token } = loginToken;
+                signIn(access_token);
+                //@ts-ignore
+                router.replace("/");
+            }
         } catch (e) {
             Toast.error(errorHandler(e));
         } finally {
@@ -61,7 +86,7 @@ export const UserForm = () => {
                 rules={{ required: true }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                        placeholder="Username"
+                        placeholder="Usuário"
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -70,14 +95,14 @@ export const UserForm = () => {
                 )}
                 name="username"
             />
-            {errors.username && <Text>Username is required.</Text>}
+            {errors.username && <Text>Usuário é obrigatório.</Text>}
             <Controller
                 control={control}
                 rules={{ required: true }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                         secureTextEntry
-                        placeholder="Password"
+                        placeholder="Senha"
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -86,7 +111,7 @@ export const UserForm = () => {
                 )}
                 name="password"
             />
-            {errors.password && <Text>Password is required.</Text>}
+            {errors.password && <Text>Senha é obrigatório.</Text>}
             <Controller
                 control={control}
                 rules={{ required: true, pattern: /^[0-9]{5}-?[0-9]{3}$/ }}
@@ -110,7 +135,7 @@ export const UserForm = () => {
                 control={control}
                 render={({ field: { value } }) => (
                     <TextInput
-                        placeholder="City"
+                        placeholder="Cidade"
                         style={[styles.input, { backgroundColor: "#f0f0f0" }]}
                         value={value}
                         editable={false}
@@ -122,7 +147,7 @@ export const UserForm = () => {
                 control={control}
                 render={({ field: { value } }) => (
                     <TextInput
-                        placeholder="State"
+                        placeholder="Estado"
                         style={[styles.input, { backgroundColor: "#f0f0f0" }]}
                         value={value}
                         editable={false}
@@ -139,8 +164,8 @@ export const UserForm = () => {
                 ) : (
                     <Button
                         color={color[colorScheme ?? "light"].tint}
-                        title="Login"
-                        onPress={handleSubmit(handleLogin)}
+                        title={edit ? "Editar" : "Login"}
+                        onPress={handleSubmit(onSubmit)}
                     />
                 )}
             </View>

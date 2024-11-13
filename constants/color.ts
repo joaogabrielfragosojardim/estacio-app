@@ -1,18 +1,18 @@
-const main = "#780606";
+export const mainColor = "#780606";
 
 export const color = {
   light: {
     text: "#000",
     background: "#fff",
-    tint: main,
+    tint: mainColor,
     tabIconDefault: "#ccc",
-    tabIconSelected: main,
+    tabIconSelected: mainColor,
   },
   dark: {
     text: "#fff",
     background: "#152238",
-    tint: main,
+    tint: mainColor,
     tabIconDefault: "#ccc",
-    tabIconSelected: main,
+    tabIconSelected: mainColor,
   },
 };

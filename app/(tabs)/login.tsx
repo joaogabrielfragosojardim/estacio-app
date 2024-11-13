@@ -1,18 +1,11 @@
 import { StyleSheet } from "react-native";
 import { Link } from "expo-router";
-import ToastManager, { Toast } from "expo-react-native-toastify";
 import { Text, View } from "@/components/themed";
 import { LoginForm } from "@/components/forms/login-form";
-
-interface IForm {
-  username: string;
-  password: string;
-}
 
 export default function Login() {
   return (
     <View style={styles.container}>
-      <ToastManager />
       <Text style={styles.title}>Login! 📚 </Text>
       <View style={styles.separator} />
       <LoginForm />

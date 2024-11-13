@@ -15,6 +15,7 @@ import { errorHandler } from "@/utils/error-handler";
 import ToastManager, { Toast } from "expo-react-native-toastify";
 import { View, Text } from "../themed";
 import { color } from "@/constants/color";
+import { useRouter } from "expo-router";
 
 
 interface ILoginForm {
@@ -24,6 +25,7 @@ interface ILoginForm {
 
 export const LoginForm = () => {
   const colorScheme = useColorScheme();
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
 
   const { signIn } = useSession();
@@ -38,7 +40,7 @@ export const LoginForm = () => {
       const loginToken = await login(data);
       const { access_token } = loginToken;
       signIn(access_token);
-      Linking.openURL("/");
+      router.replace("/");
     } catch (e) {
       Toast.error(errorHandler(e));
     } finally {

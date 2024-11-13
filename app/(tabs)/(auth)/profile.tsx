@@ -1,23 +1,22 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  useColorScheme,
-} from "react-native";
-
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, useColorScheme, TouchableOpacity, Linking } from "react-native";
 import { useSession } from "@/app/ctx";
-import { useEffect, useState } from "react";
 import { getMe } from "@/api/user/get-me";
 import ToastManager, { Toast } from "expo-react-native-toastify";
 import { errorHandler } from "@/utils/error-handler";
 import { User } from "@/dtos/user";
 import Avatar from "boring-avatars";
 import { Text, View } from "@/components/themed";
-import { color } from "@/constants/color";
+import { color, mainColor } from "@/constants/color";
+import { FontAwesome } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { userStore } from "@/store/user-store";
 
 export default function Profile() {
   const { session } = useSession();
   const colorScheme = useColorScheme();
-
+  const router = useRouter();
+  const store = userStore()
   const [userData, setUserData] = useState<User>();
   const [loading, setIsLoading] = useState(false);
 
@@ -28,6 +27,7 @@ export default function Profile() {
         if (session) {
           const data = await getMe(session);
           setUserData(data);
+          store.addUser(data as User)
         }
       } catch (e) {
         Toast.error(errorHandler(e));
@@ -49,6 +49,10 @@ export default function Profile() {
     );
   }
 
+  const handleEditProfile = () => {
+    router.replace("/edit-profile");
+  };
+
   return (
     <View>
       <View style={styles.user}>
@@ -60,6 +64,13 @@ export default function Profile() {
           <Text
             style={styles.title}
           >{`${userData?.city}/${userData?.state}`}</Text>
+          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+            <FontAwesome
+              name="pencil"
+              size={15}
+              color="white"
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.container}></View>
@@ -96,10 +107,13 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: "center",
   },
-  avatar: {
-    width: 50,
-    height: 50,
+  editButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 25,
+    height: 25,
     borderRadius: "100%",
-    backgroundColor: "gray",
+    backgroundColor: mainColor,
   },
 });
