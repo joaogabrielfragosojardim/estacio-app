@@ -3,4 +3,5 @@ export interface User {
   cep: string;
   city: string;
   state: string;
+  phone: string;
 }

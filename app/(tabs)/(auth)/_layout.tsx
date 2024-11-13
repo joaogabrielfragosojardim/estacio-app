@@ -16,7 +16,7 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const { session, isLoading } = useSession();
   const colorScheme = useColorScheme();
-  // You can keep the splash screen open, or render a loading screen like we do here.
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -40,8 +40,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "Perfil",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          headerShown: false
+        }}
+      />
+      <Tabs.Screen
+        name="edit-profile"
+        options={{
+          title: "Editar Perfil",
+          href: null
         }}
       />
     </Tabs>

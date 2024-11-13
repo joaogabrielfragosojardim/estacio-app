@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, useColorScheme, TouchableOpacity, Linking } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  useColorScheme,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import { useSession } from "@/app/ctx";
 import { getMe } from "@/api/user/get-me";
 import ToastManager, { Toast } from "expo-react-native-toastify";
@@ -11,12 +17,13 @@ import { color, mainColor } from "@/constants/color";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { userStore } from "@/store/user-store";
+import { UserBookList } from "@/components/user-book-list";
 
 export default function Profile() {
   const { session } = useSession();
   const colorScheme = useColorScheme();
   const router = useRouter();
-  const store = userStore()
+  const store = userStore();
   const [userData, setUserData] = useState<User>();
   const [loading, setIsLoading] = useState(false);
 
@@ -27,7 +34,7 @@ export default function Profile() {
         if (session) {
           const data = await getMe(session);
           setUserData(data);
-          store.addUser(data as User)
+          store.addUser(data as User);
         }
       } catch (e) {
         Toast.error(errorHandler(e));
@@ -40,7 +47,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.containerLoading}>
         <ActivityIndicator
           size="large"
           color={color[colorScheme ?? "light"].tint}
@@ -54,26 +61,27 @@ export default function Profile() {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.user}>
         <View style={styles.avatarContainer}>
           <Avatar size={40} variant="beam" name={userData?.username} />
           <Text>{userData?.username}</Text>
         </View>
+        <Text>{userData?.phone}</Text>
+
         <View style={styles.avatarContainer}>
           <Text
             style={styles.title}
           >{`${userData?.city}/${userData?.state}`}</Text>
-          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-            <FontAwesome
-              name="pencil"
-              size={15}
-              color="white"
-            />
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={handleEditProfile}
+          >
+            <FontAwesome name="pencil" size={15} color="white" />
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.container}></View>
+      <UserBookList />
       <ToastManager />
     </View>
   );
@@ -82,14 +90,19 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+  },
+  containerLoading: {
+    flex: 1,
     justifyContent: "center",
+    alignItems: "center",
   },
   user: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    borderBottomColor: color.light.tabIconDefault,
+    borderBottomWidth: 1,
   },
   title: {
     color: "gray",
@@ -100,8 +113,8 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   avatarContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 25,
+    paddingVertical: 12,
     display: "flex",
     flexDirection: "row",
     gap: 10,
