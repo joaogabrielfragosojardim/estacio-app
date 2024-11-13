@@ -1,9 +1,12 @@
 import { Button, StyleSheet, TextInput } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useSession } from "./ctx";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
+import * as Linking from 'expo-linking';
 import { Controller, useForm } from "react-hook-form";
-
+import { singUp } from "@/api/auth/sing-up";
+import ToastManager, { Toast } from "expo-react-native-toastify";
+import { errorHandler } from "@/utils/error-handler";
 interface IForm {
   username: string;
   password: string;
@@ -16,14 +19,20 @@ export default function CreateAccount() {
     handleSubmit,
     formState: { errors },
   } = useForm<IForm>();
-  const handleLogin = (data: IForm) => {
-    signIn();
-    router.replace("/");
+  const handleLogin = async (data: IForm) => {
+    try {
+      const loginToken = await singUp(data)
+      signIn(loginToken?.token);
+      Linking.openURL("/");
+    } catch (e) {
+      Toast.error(errorHandler(e));
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign in! 🔥 </Text>
+      <ToastManager />
+      <Text style={styles.title}>Sign Up! 🔥 </Text>
       <View
         style={styles.separator}
         lightColor="#eee"
@@ -49,6 +58,7 @@ export default function CreateAccount() {
         rules={{ required: true }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
+            secureTextEntry
             placeholder="Password"
             style={styles.input}
             onBlur={onBlur}
@@ -61,7 +71,7 @@ export default function CreateAccount() {
       {errors.password && <Text>Password is required.</Text>}
       <Button
         color="#780606"
-        title="Sign in"
+        title="Sign Up"
         onPress={handleSubmit(handleLogin)}
       />
       <Link href="/login" style={styles.dontHaveAccount}>

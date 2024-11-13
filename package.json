@@ -18,6 +18,7 @@
     "expo": "^52.0.3",
     "expo-font": "~13.0.1",
     "expo-linking": "~7.0.2",
+    "expo-react-native-toastify": "^1.0.8",
     "expo-router": "~4.0.2",
     "expo-secure-store": "~14.0.0",
     "expo-splash-screen": "~0.29.7",
@@ -30,7 +31,8 @@
     "react-native": "0.76.1",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.0.0",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "wretch": "^2.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
