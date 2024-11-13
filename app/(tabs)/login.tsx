@@ -1,12 +1,20 @@
-import { Button, Linking, StyleSheet, TextInput } from "react-native";
-import { Text, View } from "@/components/Themed";
-import { useSession } from "./ctx";
+import {
+  ActivityIndicator,
+  Button,
+  Linking,
+  StyleSheet,
+  TextInput,
+  useColorScheme,
+} from "react-native";
+import { useSession } from "../ctx";
 import { Link } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { login } from "@/api/auth/login";
 import { errorHandler } from "@/utils/error-handler";
 import ToastManager, { Toast } from "expo-react-native-toastify";
-
+import Colors from "@/constants/Colors";
+import { useState } from "react";
+import { Text, View } from "@/components/Themed";
 
 interface IForm {
   username: string;
@@ -14,6 +22,9 @@ interface IForm {
 }
 
 export default function Login() {
+  const colorScheme = useColorScheme();
+  const [loading, setLoading] = useState(false);
+
   const { signIn } = useSession();
   const {
     control,
@@ -21,23 +32,25 @@ export default function Login() {
     formState: { errors },
   } = useForm<IForm>();
   const handleLogin = async (data: IForm) => {
+    setLoading(true)
     try {
-      const loginToken = await login(data)
-      signIn(loginToken?.token);
+      const loginToken = await login(data);
+      const { access_token } = loginToken;
+      signIn(access_token);
       Linking.openURL("/");
     } catch (e) {
       Toast.error(errorHandler(e));
+    } finally {
+      setLoading(false)
     }
   };
 
   return (
     <View style={styles.container}>
       <ToastManager />
-      <Text style={styles.title}>Login! 🔥 </Text>
+      <Text style={styles.title}>Login! 📚 </Text>
       <View
         style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
       />
       <Controller
         control={control}
@@ -69,11 +82,18 @@ export default function Login() {
         name="password"
       />
       {errors.password && <Text>Password is required.</Text>}
-      <Button
-        color="#780606"
-        title="Login"
-        onPress={handleSubmit(handleLogin)}
-      />
+      <View>
+        {loading ? (
+          <ActivityIndicator size="large" color={Colors[colorScheme ?? "light"].tint}
+          />
+        ) : (
+          <Button
+            color={Colors[colorScheme ?? "light"].tint}
+            title="Login"
+            onPress={handleSubmit(handleLogin)}
+          />
+        )}
+      </View>
       <Link href="/create-account" style={styles.dontHaveAccount}>
         Don't have an account? create one
       </Link>
