@@ -2,11 +2,10 @@ import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Redirect, Tabs } from "expo-router";
 
-import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useSession } from "@/app/ctx";
-import { Text } from "react-native";
+import { Text, useColorScheme } from "react-native";
+import { useClientOnlyValue } from "@/components/use-client-only-value.web";
+import { color } from "@/constants/color";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -26,11 +25,10 @@ export default function TabLayout() {
     return <Redirect href="/login" />;
   }
 
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: color[colorScheme ?? "light"].tint,
         headerShown: useClientOnlyValue(false, true),
       }}
     >
@@ -51,4 +49,3 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-

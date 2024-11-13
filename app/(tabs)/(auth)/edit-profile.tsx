@@ -10,9 +10,9 @@ import { getMe } from "@/api/user/get-me";
 import ToastManager, { Toast } from "expo-react-native-toastify";
 import { errorHandler } from "@/utils/error-handler";
 import { User } from "@/dtos/user";
-import Colors from "@/constants/Colors";
 import Avatar from "boring-avatars";
-import { Text, View } from "@/components/Themed";
+import { Text, View } from "@/components/themed";
+import { color } from "@/constants/color";
 
 export default function Profile() {
   const { session } = useSession();
@@ -43,7 +43,7 @@ export default function Profile() {
       <View style={styles.container}>
         <ActivityIndicator
           size="large"
-          color={Colors[colorScheme ?? "light"].tint}
+          color={color[colorScheme ?? "light"].tint}
         />
       </View>
     );

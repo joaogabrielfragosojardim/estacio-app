@@ -8,8 +8,8 @@ import { singUp } from "@/api/auth/sing-up";
 import { getCepData } from "@/api/auth/get-cep";
 import ToastManager, { Toast } from "expo-react-native-toastify";
 import { errorHandler } from "@/utils/error-handler";
-import Colors from "@/constants/Colors";
-import { Text, View } from "@/components/Themed";
+import { Text, View } from "@/components/themed";
+import { color } from "@/constants/color";
 
 
 interface IForm {
@@ -145,10 +145,10 @@ export default function CreateAccount() {
 
       <View>
         {loading ? (
-          <ActivityIndicator size="large" color={Colors[colorScheme ?? "light"].tint} />
+          <ActivityIndicator size="large" color={color[colorScheme ?? "light"].tint} />
         ) : (
           <Button
-            color={Colors[colorScheme ?? "light"].tint}
+            color={color[colorScheme ?? "light"].tint}
             title="Login"
             onPress={handleSubmit(handleLogin)}
           />

@@ -1,6 +1,6 @@
 const main = "#780606";
 
-export default {
+export const color = {
   light: {
     text: "#000",
     background: "#fff",

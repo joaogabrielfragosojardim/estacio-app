@@ -12,9 +12,9 @@ import { Controller, useForm } from "react-hook-form";
 import { login } from "@/api/auth/login";
 import { errorHandler } from "@/utils/error-handler";
 import ToastManager, { Toast } from "expo-react-native-toastify";
-import Colors from "@/constants/Colors";
 import { useState } from "react";
-import { Text, View } from "@/components/Themed";
+import { Text, View } from "@/components/themed";
+import { LoginForm } from "@/components/forms/login-form";
 
 interface IForm {
   username: string;
@@ -52,48 +52,7 @@ export default function Login() {
       <View
         style={styles.separator}
       />
-      <Controller
-        control={control}
-        rules={{ required: true }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Username"
-            style={styles.input}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-        name="username"
-      />
-      {errors.username && <Text>Username is required.</Text>}
-      <Controller
-        control={control}
-        rules={{ required: true }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Password"
-            style={styles.input}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-        name="password"
-      />
-      {errors.password && <Text>Password is required.</Text>}
-      <View>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors[colorScheme ?? "light"].tint}
-          />
-        ) : (
-          <Button
-            color={Colors[colorScheme ?? "light"].tint}
-            title="Login"
-            onPress={handleSubmit(handleLogin)}
-          />
-        )}
-      </View>
+      <LoginForm />
       <Link href="/create-account" style={styles.dontHaveAccount}>
         Don't have an account? create one
       </Link>
