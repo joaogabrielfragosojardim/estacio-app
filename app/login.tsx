@@ -1,8 +1,12 @@
-import { Button, StyleSheet, TextInput } from "react-native";
+import { Button, Linking, StyleSheet, TextInput } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useSession } from "./ctx";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
+import { login } from "@/api/auth/login";
+import { errorHandler } from "@/utils/error-handler";
+import ToastManager, { Toast } from "expo-react-native-toastify";
+
 
 interface IForm {
   username: string;
@@ -16,15 +20,19 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<IForm>();
-  const handleLogin = (data: IForm) => {
-    //Adicione sua lógica de login aqui
-    signIn();
-    //Antes de navegar, tenha certeza de que o usuário está autenticado
-    router.replace("/");
+  const handleLogin = async (data: IForm) => {
+    try {
+      const loginToken = await login(data)
+      signIn(loginToken?.token);
+      Linking.openURL("/");
+    } catch (e) {
+      Toast.error(errorHandler(e));
+    }
   };
 
   return (
     <View style={styles.container}>
+      <ToastManager />
       <Text style={styles.title}>Login! 🔥 </Text>
       <View
         style={styles.separator}
