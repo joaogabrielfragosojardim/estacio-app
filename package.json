@@ -15,9 +15,12 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
+    "@supabase/supabase-js": "^2.46.1",
     "boring-avatars": "^1.11.2",
     "expo": "^52.0.3",
+    "expo-camera": "^16.0.5",
     "expo-font": "~13.0.1",
+    "expo-image-picker": "~16.0.1",
     "expo-linking": "~7.0.2",
     "expo-react-native-toastify": "^1.0.8",
     "expo-router": "~4.0.2",

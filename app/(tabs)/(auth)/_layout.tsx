@@ -42,14 +42,21 @@ export default function TabLayout() {
         options={{
           title: "Perfil",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-          headerShown: false
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="edit-profile"
         options={{
           title: "Editar Perfil",
-          href: null
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="create-book"
+        options={{
+          title: "Adicionar livro",
+          href: null,
         }}
       />
     </Tabs>
