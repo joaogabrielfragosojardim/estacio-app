@@ -40,7 +40,7 @@ export const LoginForm = () => {
       const loginToken = await login(data);
       const { access_token } = loginToken;
       signIn(access_token);
-      router.replace("/");
+      router.replace("/home");
     } catch (e) {
       Toast.error(errorHandler(e));
     } finally {

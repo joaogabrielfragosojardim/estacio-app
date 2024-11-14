@@ -61,8 +61,7 @@ export const UserForm = ({ edit }: { edit?: boolean }) => {
         const loginToken = await singUp(data);
         const { access_token } = loginToken;
         signIn(access_token);
-        //@ts-ignore
-        router.replace("/");
+        router.replace("/home");
       }
     } catch (e) {
       Toast.error(errorHandler(e));
