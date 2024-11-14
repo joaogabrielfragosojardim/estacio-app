@@ -26,6 +26,7 @@ export const UserBookList = () => {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const addBook = bookStore((state) => state.addBook);
+  const removeBook = bookStore((state) => state.removeBook);
 
   const [loading, setIsLoading] = useState(false);
   const [bookData, setBookData] = useState<Book[]>();
@@ -52,6 +53,7 @@ export const UserBookList = () => {
   );
 
   const redirectToCreateBook = () => {
+    removeBook();
     router.replace("/create-book");
   };
 
