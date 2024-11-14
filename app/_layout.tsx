@@ -37,11 +37,15 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 import { Slot } from "expo-router";
+import { NavigationContainer } from "@react-navigation/native";
 
 function RootLayoutNav() {
   return (
-    <SessionProvider>
-      <Slot />
-    </SessionProvider>
+    <NavigationContainer>
+      <SessionProvider>
+        <Slot />
+      </SessionProvider>
+    </NavigationContainer>
+
   );
 }

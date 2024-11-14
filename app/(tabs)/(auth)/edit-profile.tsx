@@ -6,7 +6,7 @@ import { UserForm } from "@/components/forms/user-form";
 export default function EditProfile() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Editar Perfil</Text>
+      <Text style={styles.title}>Editar Livro</Text>
       <UserForm edit />
       <View style={styles.separator} />
     </View>

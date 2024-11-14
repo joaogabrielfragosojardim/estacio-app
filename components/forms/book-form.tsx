@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useSession } from "@/app/ctx";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -14,12 +14,13 @@ import ToastManager, { Toast } from "expo-react-native-toastify";
 import { Text, View } from "../themed";
 import { color } from "@/constants/color";
 import { userStore } from "@/store/user-store";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { editUser } from "@/api/user/edit";
 import { bookStore } from "@/store/book-store";
 import { createBook } from "@/api/books/create-book";
 import { errorHandler } from "@/utils/error-handler";
+import { editBook } from "@/api/books/edit-book";
 
 interface IForm {
   name: string;
@@ -28,35 +29,46 @@ interface IForm {
 }
 
 export const BookForm = ({ edit }: { edit?: boolean }) => {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | undefined>();
+  const bookState = bookStore((state) => state.book);
   const [loading, setLoading] = useState(false);
-  const { session, signIn, signOut } = useSession();
+  const { session } = useSession();
   const colorScheme = useColorScheme();
   const router = useRouter();
-  const bookState = bookStore((state) => state.book);
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<IForm>({
     defaultValues: {
       description: bookState?.description,
-      media: bookState?.media,
       name: bookState?.name,
     },
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (bookState) {
+        setValue("description", bookState.description);
+        setValue("name", bookState.name);
+        setImage(bookState.media);
+      }
+    }, [bookState])
+  );
 
   const onSubmit = async (data: IForm) => {
     setLoading(true);
     try {
       if (edit) {
-        await createBook(session as string, data);
-        signOut();
-        router.replace("/login");
+        await editBook(session as string, { ...data, media: image as string, id: bookState?._id });
       } else {
-        await createBook(session as string, { ...data, media: image as string });
-        router.replace("/profile");
+        await createBook(session as string, {
+          ...data,
+          media: image as string,
+        });
       }
+      router.replace("/profile");
     } catch (e) {
       Toast.error(errorHandler(e));
     } finally {

@@ -3,12 +3,12 @@ import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/themed";
 import { BookForm } from "@/components/forms/book-form";
 
-export default function CreateBook() {
+export default function EditBook() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Adicionar livro! 📚 </Text>
+      <Text style={styles.title}>Editar livro! 📚 </Text>
       <View style={styles.separator} />
-      <BookForm />
+      <BookForm edit />
     </View>
   );
 }

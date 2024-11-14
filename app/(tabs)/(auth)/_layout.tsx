@@ -59,6 +59,13 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="edit-book"
+        options={{
+          title: "Editar livro",
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
