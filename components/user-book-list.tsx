@@ -14,12 +14,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  Alert,
 } from "react-native";
 import { color, mainColor } from "@/constants/color";
 import { useFocusEffect, useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { bookStore } from "@/store/book-store";
+import { deleteBook } from "@/api/books/delete-book";
 
 export const UserBookList = () => {
   const { session } = useSession();
@@ -64,7 +64,7 @@ export const UserBookList = () => {
     if (!bookToDelete) return;
     setIsLoading(true);
     try {
-      // await deleteBook(bookToDelete._id);
+      await deleteBook(session as string, bookToDelete._id as string);
       const data = await getUserBooks(session as string);
       setBookData(data);
       Toast.success("Livro excluído com sucesso.");
